@@ -40,6 +40,7 @@ export default function CareersPage() {
     resume: null,
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const jobOpenings = [];
 
@@ -134,6 +135,7 @@ export default function CareersPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       // Create FormData to send file
@@ -181,6 +183,8 @@ export default function CareersPage() {
     } catch (error) {
       console.error("Career application error:", error);
       alert("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -941,10 +945,18 @@ export default function CareersPage() {
                       <div className="flex flex-col sm:flex-row gap-4 pt-4">
                         <button
                           type="submit"
-                          className="px-8 py-4 bg-[#2563EB] text-white rounded-lg font-semibold transition-all duration-200 hover:bg-[#1D4ED8] active:scale-95"
+                          disabled={isSubmitting}
+                          className="px-8 py-4 bg-[#2563EB] text-white rounded-lg font-semibold transition-all duration-200 hover:bg-[#1D4ED8] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#2563EB] disabled:active:scale-100 inline-flex items-center justify-center gap-2"
                           style={{ fontFamily: '"Inter", sans-serif', fontSize: "16px" }}
                         >
-                          Submit Application
+                          {isSubmitting ? (
+                            <>
+                              <div className="animate-spin w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />
+                              Submitting Application...
+                            </>
+                          ) : (
+                            "Submit Application"
+                          )}
                         </button>
                         <button
                           type="button"
