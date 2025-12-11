@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Fallback Test</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .test-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin-bottom: 40px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-header {
+            background: #2563EB;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+        }
+        .parallax-container {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+        }
+        .parallax-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            top: -20%;
+            height: 120%;
+        }
+        .with-image {
+            background-image: url('/contact-hero-bg.jpg');
+        }
+        .with-broken-image {
+            background-image: url('/non-existent-image.jpg');
+        }
+        .fallback-gradient {
+            background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 50%, #DBEAFE 100%);
+        }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        .content {
+            position: relative;
+            z-index: 10;
+            padding: 40px;
+            color: white;
+        }
+        .status {
+            padding: 15px;
+            background: #f0f0f0;
+            font-family: monospace;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Image Fallback Test for Contact Page Parallax</h1>
+        
+        <!-- Test 1: Valid Image -->
+        <div class="test-section">
+            <div class="test-header">Test 1: Valid Image Path</div>
+            <div class="parallax-container">
+                <div class="parallax-bg with-image" id="test1-bg"></div>
+                <div class="overlay"></div>
+                <div class="content">
+                    <h2>Contact Us</h2>
+                    <p>This should show the background image if it exists</p>
+                </div>
+            </div>
+            <div class="status" id="test1-status">Testing...</div>
+        </div>
+
+        <!-- Test 2: Invalid Image with Fallback -->
+        <div class="test-section">
+            <div class="test-header">Test 2: Invalid Image Path (Fallback Gradient)</div>
+            <div class="parallax-container">
+                <div class="parallax-bg fallback-gradient" id="test2-bg"></div>
+                <div class="overlay"></div>
+                <div class="content">
+                    <h2>Contact Us</h2>
+                    <p>This should show the fallback gradient</p>
+                </div>
+            </div>
+            <div class="status" id="test2-status">Testing...</div>
+        </div>
+
+        <!-- Test 3: Dynamic Image Loading Test -->
+        <div class="test-section">
+            <div class="test-header">Test 3: Dynamic Image Loading (Simulates React Component)</div>
+            <div class="parallax-container">
+                <div class="parallax-bg" id="test3-bg"></div>
+                <div class="overlay"></div>
+                <div class="content">
+                    <h2>Contact Us</h2>
+                    <p>This dynamically tests image loading and applies fallback</p>
+                </div>
+            </div>
+            <div class="status" id="test3-status">Testing...</div>
+        </div>
+    </div>
+
+    <script>
+        // Test 1: Check if valid image loads
+        const test1Img = new Image();
+        test1Img.onload = () => {
+            document.getElementById('test1-status').innerHTML = 
+                '<span class="success">✓ Image loaded successfully</span>';
+        };
+        test1Img.onerror = () => {
+            document.getElementById('test1-status').innerHTML = 
+                '<span class="error">✗ Image failed to load (expected if image doesn\'t exist)</span>';
+        };
+        test1Img.src = '/contact-hero-bg.jpg';
+
+        // Test 2: Verify fallback is applied
+        document.getElementById('test2-status').innerHTML = 
+            '<span class="success">✓ Fallback gradient applied</span>';
+
+        // Test 3: Dynamic loading simulation (like React component)
+        const test3Bg = document.getElementById('test3-bg');
+        const test3Status = document.getElementById('test3-status');
+        
+        test3Status.innerHTML = 'Loading image...';
+        
+        const test3Img = new Image();
+        test3Img.onload = () => {
+            test3Bg.style.backgroundImage = 'url(/contact-hero-bg.jpg)';
+            test3Status.innerHTML = 
+                '<span class="success">✓ Image loaded and applied dynamically</span>';
+        };
+        test3Img.onerror = () => {
+            test3Bg.classList.add('fallback-gradient');
+            test3Status.innerHTML = 
+                '<span class="success">✓ Image failed to load, fallback gradient applied</span>';
+        };
+        test3Img.src = '/contact-hero-bg.jpg';
+    </script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallax Performance Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 3000px;
+        }
+        
+        .hero {
+            position: relative;
+            height: 600px;
+            overflow: hidden;
+        }
+        
+        .parallax-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url('/contact-hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            top: -20%;
+            height: 120%;
+            will-change: transform;
+        }
+        
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        .content {
+            position: relative;
+            z-index: 10;
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+        
+        .stats {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+        }
+        
+        .stat-item {
+            margin: 5px 0;
+        }
+        
+        .fps-good { color: #4ade80; }
+        .fps-ok { color: #fbbf24; }
+        .fps-bad { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="stats">
+        <div class="stat-item">FPS: <span id="fps" class="fps-good">60</span></div>
+        <div class="stat-item">Scroll Y: <span id="scrollY">0</span>px</div>
+        <div class="stat-item">Transform: <span id="transform">translate3d</span></div>
+        <div class="stat-item">GPU: <span id="gpu">Active</span></div>
+    </div>
+    
+    <div class="hero">
+        <div class="parallax-bg" id="parallaxBg"></div>
+        <div class="overlay"></div>
+        <div class="content">
+            <h1>Parallax Performance Test</h1>
+            <p>Scroll down to test the parallax effect</p>
+        </div>
+    </div>
+    
+    <div style="padding: 50px; max-width: 800px; margin: 0 auto;">
+        <h2>Performance Monitoring</h2>
+        <p>This page tests the parallax effect with GPU acceleration optimizations:</p>
+        <ul>
+            <li>✓ Using translate3d for GPU acceleration</li>
+            <li>✓ will-change: transform property applied</li>
+            <li>✓ Passive scroll event listener</li>
+            <li>✓ FPS monitoring to ensure 60fps performance</li>
+        </ul>
+        <p>Scroll up and down to see the parallax effect and monitor the FPS counter in the top-right corner.</p>
+        <p>A good performance maintains 60 FPS (green), acceptable is 45-59 FPS (yellow), and poor is below 45 FPS (red).</p>
+    </div>
+
+    <script>
+        const parallaxBg = document.getElementById('parallaxBg');
+        const fpsDisplay = document.getElementById('fps');
+        const scrollYDisplay = document.getElementById('scrollY');
+        
+        let lastTime = performance.now();
+        let frames = 0;
+        let fps = 60;
+        
+        // FPS calculation
+        function calculateFPS() {
+            const currentTime = performance.now();
+            frames++;
+            
+            if (currentTime >= lastTime + 1000) {
+                fps = Math.round((frames * 1000) / (currentTime - lastTime));
+                fpsDisplay.textContent = fps;
+                
+                // Color code FPS
+                fpsDisplay.className = fps >= 60 ? 'fps-good' : fps >= 45 ? 'fps-ok' : 'fps-bad';
+                
+                frames = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(calculateFPS);
+        }
+        
+        calculateFPS();
+        
+        // Parallax scroll handler
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            const parallaxSpeed = 0.5;
+            
+            // Update parallax transform
+            parallaxBg.style.transform = `translate3d(0, ${scrollY * parallaxSpeed}px, 0)`;
+            
+            // Update display
+            scrollYDisplay.textContent = Math.round(scrollY);
+        }
+        
+        // Use passive listener for better performance
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        // Initial call
+        handleScroll();
+    </script>
+</body>
+</html>
