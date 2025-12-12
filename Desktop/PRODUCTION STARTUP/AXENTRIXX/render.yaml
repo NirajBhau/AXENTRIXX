@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: axentrixx-backend
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_SECURE
+        value: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: CONTACT_EMAIL
+        sync: false
+      - key: SALES_EMAIL
+        sync: false
+      - key: HR_EMAIL
+        sync: false
+      - key: TEAM_EMAIL
+        sync: false
+      - key: COMPANY_NAME
+        value: Axentrixx
+      - key: COMPANY_PHONE
+        sync: false
+      - key: COMPANY_ADDRESS
+        sync: false
+      - key: FRONTEND_URL
+        value: "*"
